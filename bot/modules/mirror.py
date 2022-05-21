@@ -358,10 +358,6 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
             mega_dl = MegaDownloadHelper()
             mega_dl.add_download(link, f'{DOWNLOAD_DIR}{listener.uid}/', listener)
 
-
-
-
-
     else:
         ariaDlManager.add_download(link, f'{DOWNLOAD_DIR}{listener.uid}/', listener, name)
         sendStatusMessage(update, bot)
