@@ -4,7 +4,15 @@ from bot.helper.telegram_helper.message_utils import *
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
+from bot import (
+    dispatcher,
+    LOGGER,
+    CLONE_LIMIT,
+    STOP_DUPLICATE,
+    download_dict,
+    download_dict_lock,
+    Interval,
+)
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, check_limit
 import random
 import string
@@ -29,7 +37,7 @@ def cloneNode(update, context):
         if CLONE_LIMIT is not None:
             result = check_limit(size, CLONE_LIMIT)
             if result:
-                msg2 = f'Failed, Clone limit is {CLONE_LIMIT}.\nYour File/Folder size is {get_readable_file_size(clonesize)}.'
+                msg2 = f"Failed, Clone limit is {CLONE_LIMIT}.\nYour File/Folder size is {get_readable_file_size(clonesize)}."
                 sendMessage(msg2, context.bot, update)
                 return
         if files < 15:
@@ -38,7 +46,11 @@ def cloneNode(update, context):
             deleteMessage(context.bot, msg)
         else:
             drive = gdriveTools.GoogleDriveHelper(name)
-            gid = ''.join(random.SystemRandom().choices(string.ascii_letters + string.digits, k=12))
+            gid = "".join(
+                random.SystemRandom().choices(
+                    string.ascii_letters + string.digits, k=12
+                )
+            )
             clone_status = CloneStatus(drive, size, update, gid)
             with download_dict_lock:
                 download_dict[update.message.message_id] = clone_status
@@ -57,18 +69,24 @@ def cloneNode(update, context):
             except IndexError:
                 pass
         if update.message.from_user.username:
-            uname = f'@{update.message.from_user.username}'
+            uname = f"@{update.message.from_user.username}"
         else:
             uname = f'<a href="tg://user?id={update.message.from_user.id}">{update.message.from_user.first_name}</a>'
         if uname is not None:
-            cc = f'\n\ncc: {uname}'
-            men = f'{uname} '
+            cc = f"\n\ncc: {uname}"
+            men = f"{uname} "
         if button == "cancelled" or button == "":
             sendMessage(men + result, context.bot, update)
         else:
             sendMarkup(result + cc, context.bot, update, button)
     else:
-        sendMessage('Provide G-Drive Shareable Link to Clone.', context.bot, update)
+        sendMessage("Provide G-Drive Shareable Link to Clone.", context.bot, update)
 
-clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+
+clone_handler = CommandHandler(
+    BotCommands.CloneCommand,
+    cloneNode,
+    filters=CustomFilters.authorized_chat | CustomFilters.authorized_user,
+    run_async=True,
+)
 dispatcher.add_handler(clone_handler)
