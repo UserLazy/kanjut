@@ -15,7 +15,7 @@ lxml
 psutil
 psycopg2-binary
 pybase64
-pyrogram
+pyrogram==1.4.16
 python-dotenv
 python-magic
 python-telegram-bot
@@ -25,4 +25,4 @@ telegraph
 tenacity
 TgCrypto
 torrentool
-youtube_dl
+yt-dlp
