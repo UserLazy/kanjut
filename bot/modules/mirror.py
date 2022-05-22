@@ -235,28 +235,13 @@ class MirrorListener(listeners.MirrorListeners):
         else:
             update_all_messages()
 
-def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
+def _mirror(bot, update, isTar=False, extract=False, isZip=False):
     mesg = update.message.text.split('\n')
     message_args = mesg[0].split(' ')
     name_args = mesg[0].split('|')
-    qbitsel = False
     try:
         link = message_args[1]
-        if link == "qb" or link == "qbs":
-            isQbit = True
-            if link == "qbs":
-                qbitsel = True
-            link = message_args[2]
-            if bot_utils.is_url(link) and not bot_utils.is_magnet(link):
-                resp = requests.get(link)
-                if resp.status_code == 200:
-                    file_name = str(time.time()).replace(".", "") + ".torrent"
-                    with open(file_name, "wb") as f:
-                        f.write(resp.content)
-                    link = f"/usr/src/app/{file_name}"
-                else:
-                    sendMessage("ERROR: link got HTTP response:" + resp.status_code, bot, update)
-                    return
+        print(link)
         if link.startswith("|") or link.startswith("pswd: "):
             link = ''
     except IndexError:
@@ -323,7 +308,7 @@ def _mirror(bot, update, isTar=False, extract=False, isZip=False, isQbit=False):
                 sendMessage(f"{e}", bot, update)
                 return
 
-    listener = MirrorListener(bot, update, pswd, isTar, extract, isZip, isQbit)
+    listener = MirrorListener(bot, update, pswd, isTar, extract, isZip)
 
     if bot_utils.is_gdrive_link(link):
         if not isTar and not extract:
