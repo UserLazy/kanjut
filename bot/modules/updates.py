@@ -23,7 +23,13 @@ BRANCH_ = UPSTREAM_BRANCH
 
 # Update Command
 
-@app.on_message(filters.command([BotCommands.UpdateCommand, f'{BotCommands.UpdateCommand}@{bot.username}']) & filters.user(OWNER_ID))
+
+@app.on_message(
+    filters.command(
+        [BotCommands.UpdateCommand, f"{BotCommands.UpdateCommand}@{bot.username}"]
+    )
+    & filters.user(OWNER_ID)
+)
 async def update_it(client, message):
     msg_ = await message.reply_text("`Updating Please Wait!`")
     try:
@@ -57,9 +63,9 @@ async def update_it(client, message):
             ups_rem.pull(UPSTREAM_BRANCH)
         except GitCommandError:
             repo.git.reset("--hard", "FETCH_HEAD")
-        subprocess.run(["pip3",  "install", "--no-cache-dir", "-r",  "requirements.txt"])
+        subprocess.run(["pip3", "install", "--no-cache-dir", "-r", "requirements.txt"])
         await msg_.edit("`Updated Sucessfully! Give Me Some Time To Restart!`")
-        with open("./aria.sh", 'rb') as file:
+        with open("./aria.sh", "rb") as file:
             script = file.read()
         subprocess.call("./aria.sh", shell=True)
         args = [sys.executable, "-m", "bot"]
@@ -80,4 +86,6 @@ async def update_it(client, message):
         except BaseException as error:
             await msg_.edit(f"**Updater Error** \nTraceBack : `{error}`")
             return repo.__del__()
-        await msg_.edit(f"`Updated Sucessfully! \n\nCheck your config with` `/{BotCommands.ConfigMenuCommand}`")
+        await msg_.edit(
+            f"`Updated Sucessfully! \n\nCheck your config with` `/{BotCommands.ConfigMenuCommand}`"
+        )
