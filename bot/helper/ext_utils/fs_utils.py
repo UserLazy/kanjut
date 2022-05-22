@@ -1,5 +1,5 @@
 import sys
-from bot import aria2, LOGGER, DOWNLOAD_DIR, get_client
+from bot import aria2, LOGGER, DOWNLOAD_DIR
 import shutil
 import os
 import pathlib
@@ -23,7 +23,6 @@ def start_cleanup():
 
 def clean_all():
     aria2.remove_all(True)
-    get_client().torrents_delete(torrent_hashes="all", delete_files=True)
     try:
         shutil.rmtree(DOWNLOAD_DIR)
     except FileNotFoundError:
